@@ -1,3 +1,22 @@
+"""
+Training Program Data Management System
+------------------------------------
+This system manages and analyzes data for a 4-month training program on digital literacy, AI, and robotics.
+It generates dummy data, processes it, creates visualizations, and generates reports.
+
+Example Usage:
+    # Initialize and run the system
+    data_generator = TrainingDataGenerator()
+    data = data_generator.generate_dummy_data()
+    
+    # Create management system
+    tms = TrainingManagementSystem(data)
+    
+    # Generate visualizations and reports
+    tms.generate_visualizations()
+    report = tms.generate_comprehensive_report()
+"""
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -7,36 +26,82 @@ import numpy as np
 from pathlib import Path
 
 class TrainingDataGenerator:
+    """
+    Generates dummy training data for demonstration purposes.
+    
+    Example data point:
+    {
+        'date': '2024-01-01',
+        'girls_attendance': 20,
+        'boys_attendance': 22,
+        'total_attendance': 42,
+        'girls_engagement': 4.2,
+        'boys_engagement': 4.1,
+        'material_effectiveness': 4.5,
+        'teaching_effectiveness': 4.3,
+        'trainer_attendance': 1,
+        'daily_assessment_score': 75.5,
+        'practical_skills_score': 82.3,
+        'theoretical_knowledge': 78.9,
+        'project_completion_rate': 85.5,
+        'participation_rate': 90.0,
+        'homework_completion': 88.5
+    }
+    """
+    
     def __init__(self, start_date=datetime(2024, 1, 1), num_days=120):
+        """
+        Initialize the data generator.
+        
+        Args:
+            start_date: Starting date for the training program (default: Jan 1, 2024)
+            num_days: Duration of the program in days (default: 120 days = 4 months)
+        """
         self.start_date = start_date
         self.num_days = num_days
         
     def generate_dummy_data(self):
+        """
+        Generates dummy data for the entire training period.
+        
+        Returns:
+            pandas.DataFrame: Contains daily training metrics
+            
+        Example:
+            generator = TrainingDataGenerator()
+            data = generator.generate_dummy_data()
+            print(data.head())  # View first 5 days of data
+        """
         data = []
         for day in range(self.num_days):
             current_date = self.start_date + timedelta(days=day)
-            if current_date.weekday() >= 5:  # Skip weekends
+            # Skip weekends (Saturday=5, Sunday=6)
+            if current_date.weekday() >= 5:
                 continue
                 
+            # Generate random attendance (15-25 students per gender)
             num_girls = random.randint(15, 25)
             num_boys = random.randint(15, 25)
             
-            # Generate baseline and current scores for impact assessment
+            # Generate baseline and progressive assessment scores
+            # First day scores start lower (50-65) and gradually improve
             if day == 0:  # First day - baseline
                 self.baseline_score = random.uniform(50, 65)
+            # Progressive improvement over time with some randomness
             current_score = min(95, self.baseline_score + (day/self.num_days) * random.uniform(20, 30))
             
+            # Create daily data point with all metrics
             data.append({
                 'date': current_date.strftime('%Y-%m-%d'),
                 'girls_attendance': num_girls,
                 'boys_attendance': num_boys,
                 'total_attendance': num_girls + num_boys,
-                'girls_engagement': random.uniform(3.5, 5.0),
+                'girls_engagement': random.uniform(3.5, 5.0),  # Engagement scale: 3.5-5.0
                 'boys_engagement': random.uniform(3.5, 5.0),
-                'material_effectiveness': random.uniform(3.0, 5.0),
+                'material_effectiveness': random.uniform(3.0, 5.0),  # Effectiveness scale: 3.0-5.0
                 'teaching_effectiveness': random.uniform(3.5, 5.0),
-                'trainer_attendance': random.choice([0, 1]),
-                'daily_assessment_score': current_score,
+                'trainer_attendance': random.choice([0, 1]),  # 0=absent, 1=present
+                'daily_assessment_score': current_score,  # Progressive improvement
                 'practical_skills_score': random.uniform(60, 95),
                 'theoretical_knowledge': random.uniform(60, 95),
                 'project_completion_rate': random.uniform(70, 100),
@@ -47,12 +112,38 @@ class TrainingDataGenerator:
         return pd.DataFrame(data)
 
 class TrainingManagementSystem:
+    """
+    Manages training data analysis and visualization.
+    
+    Example:
+        data = pd.DataFrame(...)  # Your training data
+        tms = TrainingManagementSystem(data)
+        tms.generate_visualizations()
+        report = tms.generate_comprehensive_report()
+    """
+    
     def __init__(self, data):
+        """
+        Initialize the management system with training data.
+        
+        Args:
+            data (pandas.DataFrame): Training program data
+        """
         self.data = data
         self.output_dir = Path('output')
         self.output_dir.mkdir(exist_ok=True)
     
     def get_attendance_metrics(self):
+        """
+        Calculate attendance-related metrics.
+        
+        Returns:
+            dict: Contains average attendance and engagement metrics
+            
+        Example:
+            metrics = tms.get_attendance_metrics()
+            print(f"Average total attendance: {metrics['avg_total_attendance']:.2f}")
+        """
         metrics = {
             'avg_total_attendance': self.data['total_attendance'].mean(),
             'avg_girls_attendance': self.data['girls_attendance'].mean(),
@@ -64,6 +155,16 @@ class TrainingManagementSystem:
         return metrics
     
     def get_performance_metrics(self):
+        """
+        Calculate performance-related metrics.
+        
+        Returns:
+            dict: Contains various performance and effectiveness metrics
+            
+        Example:
+            metrics = tms.get_performance_metrics()
+            print(f"Average assessment score: {metrics['avg_daily_assessment']:.2f}%")
+        """
         metrics = {
             'avg_material_effectiveness': self.data['material_effectiveness'].mean(),
             'avg_teaching_effectiveness': self.data['teaching_effectiveness'].mean(),
@@ -78,8 +179,18 @@ class TrainingManagementSystem:
         return metrics
     
     def calculate_impact_assessment(self):
-        baseline = self.data.iloc[0]  # First day
-        endline = self.data.iloc[-1]  # Last day
+        """
+        Calculate the impact of the training program by comparing baseline and endline metrics.
+        
+        Returns:
+            dict: Contains improvement metrics and overall impact
+            
+        Example:
+            impact = tms.calculate_impact_assessment()
+            print(f"Overall improvement: {impact['overall_improvement_percentage']:.2f}%")
+        """
+        baseline = self.data.iloc[0]  # First day metrics
+        endline = self.data.iloc[-1]  # Last day metrics
         
         impact = {
             'assessment_improvement': endline['daily_assessment_score'] - baseline['daily_assessment_score'],
@@ -90,6 +201,20 @@ class TrainingManagementSystem:
         return impact
     
     def generate_visualizations(self):
+        """
+        Generate a comprehensive dashboard with multiple visualizations.
+        
+        Creates a dashboard.png file with 5 subplots:
+        1. Attendance trends
+        2. Performance distribution
+        3. Gender engagement
+        4. Material effectiveness
+        5. Completion rates
+        
+        Example:
+            tms.generate_visualizations()
+            # Check output/dashboard.png for the result
+        """
         # Create a dashboard layout
         plt.style.use('default')
         fig = plt.figure(figsize=(15, 12), facecolor='white')
@@ -200,6 +325,17 @@ class TrainingManagementSystem:
         plt.close()
     
     def generate_comprehensive_report(self):
+        """
+        Generate a detailed report of all metrics and assessments.
+        
+        Returns:
+            str: Formatted report text
+            
+        Example:
+            report = tms.generate_comprehensive_report()
+            with open('report.txt', 'w') as f:
+                f.write(report)
+        """
         attendance_metrics = self.get_attendance_metrics()
         performance_metrics = self.get_performance_metrics()
         impact_assessment = self.calculate_impact_assessment()
@@ -240,6 +376,12 @@ class TrainingManagementSystem:
         return report
 
 def main():
+    """
+    Main function to run the training management system.
+    
+    Example:
+        python training_management.py
+    """
     # Generate dummy data
     data_generator = TrainingDataGenerator()
     data = data_generator.generate_dummy_data()
