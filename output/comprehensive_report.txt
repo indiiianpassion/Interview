@@ -1,0 +1,32 @@
+Training Program Comprehensive Analysis Report
+==================================================
+
+1. Attendance Metrics
+--------------------
+• Average Total Attendance: 39.55
+• Average Girls Attendance: 19.71
+• Average Boys Attendance: 19.84
+• Attendance Trend: 1.72% change
+
+2. Engagement Metrics
+--------------------
+• Girls Engagement: 4.22/5.0
+• Boys Engagement: 4.20/5.0
+
+3. Performance Metrics
+--------------------
+• Material Effectiveness: 3.98/5.0
+• Teaching Effectiveness: 4.30/5.0
+• Average Assessment Score: 67.83%
+• Practical Skills Score: 78.04%
+• Theoretical Knowledge: 76.36%
+• Project Completion Rate: 84.01%
+• Participation Rate: 87.38%
+• Homework Completion: 84.62%
+
+4. Impact Assessment
+--------------------
+• Assessment Score Improvement: 22.99 points
+• Practical Skills Improvement: -8.30 points
+• Theoretical Knowledge Improvement: -23.47 points
+• Overall Improvement: 41.47%
